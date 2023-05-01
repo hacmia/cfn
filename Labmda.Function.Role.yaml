@@ -1,0 +1,107 @@
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/outputs-section-structure.html
+
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: > 
+  "Create a Lambda Role using SAM"
+
+Parameters:
+  RoleName:
+    Type: String
+    Default: "MyFirstLambdaRole"
+  StackName:
+    Type: String
+    Default: "MyFirstLambdaRoleStack"
+
+Resources:
+
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Ref RoleName
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+
+      Policies:
+      - PolicyName: Policy0
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - ssm:GetParameter*
+            - ssm:GetParameters
+            - ssm:GetParameter
+            - ssm:PutParameter
+            Resource:
+              Fn::Sub: arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/*
+
+      - PolicyName: Policy1
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - connect:GetContactAttributes
+            Resource: '*'
+
+      - PolicyName: Policy2
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            - connect:StartOutboundVoiceContact
+            - lambda:InvokeAsync
+            - lambda:InvokeFunction
+            Resource: '*'
+
+      - PolicyName: Policy3
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - xray:PutTraceSegments
+            - xray:PutTelemetryRecords
+            Resource: '*'
+
+      - PolicyName: Policy4
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - dynamodb:BatchGetItem
+            - dynamodb:PutItem
+            - dynamodb:GetShardIterator
+            - dynamodb:GetItem
+            - dynamodb:GetRecords
+            - dynamodb:DeleteItem
+            - dynamodb:UpdateItem
+            - dynamodb:Query
+            - dynamodb:BatchWriteItem
+            - dynamodb:DescribeStream
+            - dynamodb:GetRecords
+            - dynamodb:ListShards
+            - dynamodb:ListStreams
+            Resource:
+            - '*'
+            - Fn::Sub: arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/*
+
+Outputs:
+  LambdaRoleOutput:
+    Value: !GetAtt LambdaRole.Arn
+    Description: Arn of the role to be used by all lambdas 
+    Export:
+      Name: !Sub "${RoleName}-Export"
