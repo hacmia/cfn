@@ -1,0 +1,198 @@
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/pseudo-parameter-reference.html
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-sub.html
+# https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_identity-vs-resource.html
+# https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_principal.html
+# https://aws.amazon.com/blogs/security/how-to-use-trust-policies-with-iam-roles/
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-accesskey.html
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy-2.html
+
+# aws sts assume-role --role-arn arn:aws:iam::{AccountID}:role/DeploymentRole --role-session-name DeploymentRoleSession
+
+############################################################################
+# ABOUT: CREATES AN IAM USER AND GIVES IT BASE PERMISSIONS 
+#        TO DEPLOY AND REMOVE SSM PARAMETER RESOURCES IN CLOUDFORMATION
+############################################################################
+
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  EnvironmentName: 
+    Type: String
+    Default: DEV
+  Stackname:
+    Type: String
+    Default: DeploymentRoleStack
+  Password: 
+    Type: String
+    Default: 3EkY77N%2
+  GroupName: 
+    Type: String
+    Default: DeploymentGroup
+
+Resources:
+
+  User:
+    Type: AWS::IAM::User
+    Properties: 
+      LoginProfile: 
+        Password: !Ref Password
+        PasswordResetRequired: false
+      UserName: DeploymentUser
+
+  UserKeys:
+    Type: AWS::IAM::AccessKey
+    Properties: 
+      # Serial: 1
+      Status: "Active"
+      UserName: !Ref User
+
+  UserGroup:
+    Type: AWS::IAM::Group
+    Properties: 
+      GroupName: !Ref GroupName
+      # ManagedPolicyArns: 
+      #   - String
+      # Path: String
+      Policies: 
+        - PolicyName: "VisualEditor0"
+          PolicyDocument: 
+            Version: "2012-10-17"
+            Statement: 
+              - Effect: "Allow"
+                Action:
+                - cloudformation:CreateUploadBucket
+                - sns:*
+                - cloudformation:ListStacks
+                - cloudformation:GetStackPolicy
+                - cloudformation:DescribeStackEvents
+                - cloudformation:CreateStack
+                - s3:*
+                - cloudformation:DeleteStack
+                - iam:ListRoles
+                - cloudformation:GetTemplateSummary
+                - cloudformation:DescribeStacks
+                - cloudformation:CreateChangeSet
+                - cloudformation:UpdateStack
+                - iam:GetRole
+                - iam:CreateRole
+                - iam:DeleteRolePolicy
+                - iam:PutRolePolicy
+                - iam:getRolePolicy
+                - cloudformation:ListStackResources
+                - lambda:GetFunction
+                - lambda:CreateFunction
+                - lambda:DeleteFunction
+                - iam:PassRole
+                - lambda:TagResource
+                - lambda:ListVersionsByFunction
+                - lambda:PublishVersion
+                - lambda:CreateAlias
+                - lambda:UpdateFunctionCode
+                - lambda:ListTags
+                - cloudformation:DescribeChangeSet
+                - cloudformation:ExecuteChangeSet
+                Resource: "*"
+                
+        - PolicyName: "VisualEditor1"
+          PolicyDocument: 
+            Version: "2012-10-17"
+            Statement: 
+              - Effect: "Allow"
+                Action:
+                - ssm:PutParameter
+                - ssm:DescribeParameters
+                - ssm:AddTagsToResource
+                - ssm:DeleteParameter
+                - ssm:ListCommands
+                - ssm:ListDocumentVersions
+                - ssm:ListDocumentMetadataHistory
+                - ssm:DescribeMaintenanceWindowSchedule
+                - ssm:DescribeInstancePatches
+                - ssm:ListInstanceAssociations
+                - ssm:GetParameter
+                - ssm:GetMaintenanceWindowExecutionTaskInvocation
+                - ssm:DescribeAutomationExecutions
+                - ssm:GetMaintenanceWindowTask
+                - ssm:DescribeMaintenanceWindowExecutionTaskInvocations
+                - ssm:DescribeAutomationStepExecutions
+                - ssm:ListOpsMetadata
+                - ssm:ListResourceDataSync
+                - ssm:ListDocuments
+                - ssm:DescribeMaintenanceWindowsForTarget
+                - ssm:ListComplianceItems
+                - ssm:GetConnectionStatus
+                - ssm:GetMaintenanceWindowExecutionTask
+                - ssm:GetOpsItem
+                - ssm:GetMaintenanceWindowExecution
+                - ssm:ListResourceComplianceSummaries
+                - ssm:GetParameters
+                - ssm:GetOpsMetadata
+                - ssm:ListOpsItemRelatedItems
+                - ssm:DescribeOpsItems
+                - ssm:DescribeMaintenanceWindows
+                - ssm:DescribeEffectivePatchesForPatchBaseline
+                - ssm:GetServiceSetting
+                - ssm:DescribeAssociationExecutions
+                - ssm:DescribeDocumentPermission
+                - ssm:ListCommandInvocations
+                - ssm:GetAutomationExecution
+                - ssm:DescribePatchGroups
+                - ssm:GetDefaultPatchBaseline
+                - ssm:DescribeDocument
+                - ssm:DescribeMaintenanceWindowTasks
+                - ssm:ListAssociationVersions
+                - ssm:GetPatchBaselineForPatchGroup
+                - ssm:PutConfigurePackageResult
+                - ssm:DescribePatchGroupState
+                - ssm:DescribeMaintenanceWindowExecutions
+                - ssm:GetManifest
+                - ssm:DescribeMaintenanceWindowExecutionTasks
+                - ssm:DescribeInstancePatchStates
+                - ssm:DescribeInstancePatchStatesForPatchGroup
+                - ssm:GetDocument
+                - ssm:GetInventorySchema
+                - ssm:GetParametersByPath
+                - ssm:GetMaintenanceWindow
+                - ssm:DescribeInstanceAssociationsStatus
+                - ssm:DescribeAssociationExecutionTargets
+                - ssm:GetPatchBaseline
+                - ssm:DescribeInstanceProperties
+                - ssm:ListInventoryEntries
+                - ssm:DescribeAssociation
+                - ssm:ListOpsItemEvents
+                - ssm:GetDeployablePatchSnapshotForInstance
+                - ssm:DescribeSessions
+                - ssm:GetParameterHistory
+                - ssm:DescribeMaintenanceWindowTargets
+                - ssm:DescribePatchBaselines
+                - ssm:DescribeEffectiveInstanceAssociations
+                - ssm:DescribeInventoryDeletions
+                - ssm:GetResourcePolicies
+                - ssm:DescribePatchProperties
+                - ssm:GetInventory
+                - ssm:GetOpsSummary
+                - ssm:DescribeActivations
+                - ssm:GetCommandInvocation
+                - ssm:ListComplianceSummaries
+                - ssm:DescribeInstanceInformation
+                - ssm:ListTagsForResource
+                - ssm:DescribeDocumentParameters
+                - ssm:GetCalendar
+                - ssm:ListAssociations
+                - ssm:GetCalendarState
+                - ssm:DescribeAvailablePatches
+                Resource: !Sub 'arn:aws:ssm:us-east-1:${AWS::AccountId}:*'
+
+  AddUser:
+    Type: AWS::IAM::UserToGroupAddition
+    Properties: 
+      GroupName: !Ref UserGroup
+      Users: 
+        - !Ref User
+
+Outputs:
+  AccessKey:
+    Value: !Ref UserKeys
+  SecretAccessKey:
+    Value: !GetAtt UserKeys.SecretAccessKey
