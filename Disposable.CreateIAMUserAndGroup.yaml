@@ -22,7 +22,7 @@ Parameters:
     Default: DEV
   Stackname:
     Type: String
-    Default: DeploymentRoleStack
+    Default: DisposableCreateIAMUserAndGroup
   Password: 
     Type: String
     Default: 3EkY77N%2
@@ -92,6 +92,8 @@ Resources:
                 - lambda:ListTags
                 - cloudformation:DescribeChangeSet
                 - cloudformation:ExecuteChangeSet
+                - lambda:DeleteAlias
+                - iam:DeleteRole
                 Resource: "*"
                 
         - PolicyName: "VisualEditor1"
