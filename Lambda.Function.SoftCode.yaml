@@ -1,0 +1,68 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: > 
+  "Create a Lambda using SAM"
+  
+Globals:
+  Function:
+    Architectures: 
+      - arm64
+    AutoPublishAlias: live
+    MemorySize: 128
+    Timeout: 8
+    Runtime: nodejs16.x
+    Environment:
+      Variables:
+        MyVariable: '{{resolve:ssm:MyParameterName:1}}'
+
+Parameters:
+  LambdaName:
+    Type: String
+    Default: "MyFirstLambda"
+  DeploymentAlias:
+      Type: String
+      Description: Enter a value
+      Default: live
+  StackName:
+    Type: String
+    Default: MyFirstLambdaStack
+    
+Resources:
+
+  Lambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Ref LambdaName
+      Description: Create a lambda with version and alias using serverless.
+      InlineCode: |
+          // CHANGED TO SERVERLESS FUNCTION
+          const AWS = require('aws-sdk');
+          exports.handler = async (event, context) => {
+            console.log("EVENT",JSON.stringify({ event, context }));
+            return {
+                      "message": "Success",
+                      "requestAttributes": event.requestAttributes
+                    }
+          }
+      Handler: index.handler
+      Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/${LambdaName}Role"
+      
+Outputs:
+  LambdaArnWithAlias:
+    Description: Lambda Arn with Alias
+    Value: 
+      !Join
+        - ''
+        - - !GetAtt Lambda.Arn
+          - ':'
+          - !Ref DeploymentAlias
+    Export:
+      Name: !Ref LambdaName
+
+  LambdaName:
+    Description: Lambda function name
+    Value: !Ref Lambda
+
+  LambdaArn:
+    Description: Lambda Arn
+    Value: !GetAtt Lambda.Arn
