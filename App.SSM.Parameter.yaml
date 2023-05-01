@@ -1,0 +1,38 @@
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ssm-parameter.html
+
+# This is not an ideal parameter, this is just showing what is possible
+AWSTemplateFormatVersion: 2010-09-09
+Description: > 
+  "Create an Systems Manager Parameter Role using Cloudformation"
+Parameters:
+  ParamName:
+    Type: String
+    Default: MyParameterName
+  ParamValue:
+    Type: String
+    Default: My parameter value
+  EnvironmentName: 
+    Type: String
+    Default: DEV
+  Stackname:
+    Type: String
+    Default: SSMParameterStack
+
+Resources: 
+  Parameter:
+    Type: AWS::SSM::Parameter
+    Properties: 
+      Description: Deploying a string (SecureString isn't supported in cloudFormation) Allowed Values are String | StringList
+      Name: !Ref ParamName
+      Type: String
+      Value: !Ref ParamValue
+      Tags:
+        Environment: !Ref EnvironmentName
+
+Outputs:
+  ParameterOutput:
+    Value: !GetAtt Parameter.Value
+    Description: Arn of the Parameter
+    Export:
+      Name: !Sub "${ParamName}-Export"
+
