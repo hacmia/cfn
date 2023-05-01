@@ -14,9 +14,6 @@ Parameters:
   EnvironmentName: 
     Type: String
     Default: DEV
-  Stackname:
-    Type: String
-    Default: SSMParameterStack
 
 Resources: 
   Parameter:

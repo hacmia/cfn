@@ -9,9 +9,6 @@ Parameters:
   RoleName:
     Type: String
     Default: "MyFirstLambdaRole"
-  StackName:
-    Type: String
-    Default: "MyFirstLambdaRoleStack"
 
 Resources:
 

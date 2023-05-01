@@ -23,9 +23,6 @@ Parameters:
       Type: String
       Description: Enter a value
       Default: live
-  StackName:
-    Type: String
-    Default: MyFirstLambdaStack
     
 Resources:
 
