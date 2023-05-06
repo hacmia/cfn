@@ -1,0 +1,30 @@
+# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-simpletable.html
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-dynamodb-table-keyschema.html
+# https://seed.run/docs/serverless-errors/property-attributedefinitions-is-inconsistent-with-the-keyschema-of-the-table-and-the-secondary-indexes.html
+
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: > 
+  "Create a Simple DDB Table using SAM"
+
+Resources:
+
+  MyTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: MyFirstTable
+      AttributeDefinitions:
+        - AttributeName: key
+          AttributeType: S
+        - AttributeName: sort
+          AttributeType: S
+      KeySchema:
+        - AttributeName: key
+          KeyType: HASH
+        - AttributeName: sort
+          KeyType: RANGE
+      # ProvisionedThroughput:
+      #   ReadCapacityUnits: 0
+      #   WriteCapacityUnits: 0
+      BillingMode: PAY_PER_REQUEST

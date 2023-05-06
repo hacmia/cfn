@@ -1,3 +1,5 @@
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-exports.html
+
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: > 
@@ -14,6 +16,8 @@ Globals:
     Environment:
       Variables:
         MyVariable: '{{resolve:ssm:MyParameterName:1}}'
+    Layers:
+      - !Ref LayerArn 
 
 Parameters:
   LambdaName:
@@ -23,6 +27,9 @@ Parameters:
       Type: String
       Description: Enter a value
       Default: live
+  LayerArn:
+    Type: String
+    Default : 'Error: Layer Arn is required'
     
 Resources:
 

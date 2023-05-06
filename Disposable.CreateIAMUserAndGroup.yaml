@@ -7,6 +7,7 @@
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-accesskey.html
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy-2.html
+# https://gnomezgrave.com/2020/06/04/update-cross-stack-aws-lambda-layers/
 
 # aws sts assume-role --role-arn arn:aws:iam::{AccountID}:role/DeploymentRole --role-session-name DeploymentRoleSession
 
@@ -94,6 +95,17 @@ Resources:
                 - cloudformation:ExecuteChangeSet
                 - lambda:DeleteAlias
                 - iam:DeleteRole
+                - dynamodb:DescribeTable
+                - dynamodb:CreateTable
+                - dynamodb:DeleteTable
+                - dynamodb:PutItem
+                - dynamodb:GetItem
+                - dynamodb:Query
+                - lambda:PublishLayerVersion
+                - cloudformation:ListExports
+                - lambda:UpdateFunctionConfiguration
+                - lambda:UpdateAlias
+                - lambda:GetLayerVersion
                 Resource: "*"
                 
         - PolicyName: "VisualEditor1"

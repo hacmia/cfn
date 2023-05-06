@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+
+Description: > 
+  "MyLayer - description here. A Simple Layer"
+  
+Resources:
+  Layer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      Description: My Layer
+      LayerName: MyLayer
+      ContentUri: ../layers/
+      CompatibleRuntimes:
+      - nodejs16.x
+      RetentionPolicy: Retain
+
+Outputs:
+  LayerArn:
+    Description: MyLayer
+    Value: !Ref Layer
+    Export:
+      Name: MyLayer
+
+  LayerVersionNumber:
+    Description: Layer Version 
+    Value: !Select [7, !Split [ ":", !Ref Layer ] ]
+    Export:
+      Name: LayerVersionNumber
