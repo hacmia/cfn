@@ -28,3 +28,6 @@ Resources:
       #   ReadCapacityUnits: 0
       #   WriteCapacityUnits: 0
       BillingMode: PAY_PER_REQUEST
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true

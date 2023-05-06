@@ -106,6 +106,8 @@ Resources:
                 - lambda:UpdateFunctionConfiguration
                 - lambda:UpdateAlias
                 - lambda:GetLayerVersion
+                - dynamodb:UpdateTimeToLive
+                - dynamodb:DescribeTimeToLive
                 Resource: "*"
                 
         - PolicyName: "VisualEditor1"
